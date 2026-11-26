@@ -13,3 +13,7 @@ Phông Be Vietnam Pro (Copyright The Be Vietnam Pro Project Authors) và JetBrai
 (Copyright The JetBrains Mono Project Authors) phát hành theo SIL Open Font License 1.1,
 xem assets/fonts/OFL-*.txt.
 Một phần dữ liệu giá USD ngân hàng lấy từ kho công khai thuanhuynh247/vcb-exchange-rate.
+
+server/drivers.mjs và server/env-path.mjs (kết nối AI CLI & API) lấy từ MedSlide VI Studio
+(https://github.com/thuanhuynh247/medslide-vi-studio, MIT, cùng tác giả).
+DuckDB-WASM (MIT, DuckDB Labs) được đóng gói vào bản cài để chạy SQL offline.

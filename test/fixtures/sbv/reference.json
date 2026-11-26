@@ -1,0 +1,842 @@
+{
+  "actions" : {
+    "get" : {
+      "method" : "GET",
+      "href" : "https://sbv.gov.vn/o/headless-delivery/v1.0/content-structures/3450514/structured-contents"
+    }
+  },
+  "facets" : [ ],
+  "items" : [ {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2026-11-25T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày áp dụng",
+      "name" : "ngayApDung",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : ""
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Ghi chú",
+      "name" : "ghiChu",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "USD-Đô la Mỹ",
+          "value" : "USD-Đô la Mỹ"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "25500"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "26909"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "EUR-Đồng Euro",
+          "value" : "EUR-Đồng Euro"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "26767"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "29584"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "JPY-Yên Nhật",
+          "value" : "JPY-Yên Nhật"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "153"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "170"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "GBP-Bảng Anh",
+          "value" : "GBP-Bảng Anh"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "31999"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "35367"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "CHF-Phơ răng Thuỵ Sĩ",
+          "value" : "CHF-Phơ răng Thuỵ Sĩ"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "29340"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "32429"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "AUD-Đô la Úc",
+          "value" : "AUD-Đô la Úc"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "16192"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "17896"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "CAD-Đô la Canada",
+          "value" : "CAD-Đô la Canada"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "17164"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "18970"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    } ],
+    "datePublished" : "2026-11-26T01:06:00Z",
+    "id" : 11013535,
+    "title" : "Tỷ giá tham khảo giữa đồng Việt Nam và các loại ngoại tệ tại Cục Quản lý ngoại hối ngày 26/11/2026"
+  }, {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2026-11-24T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày áp dụng",
+      "name" : "ngayApDung",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : ""
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Ghi chú",
+      "name" : "ghiChu",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "USD-Đô la Mỹ",
+          "value" : "USD-Đô la Mỹ"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "25500"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "26912"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "EUR-Đồng Euro",
+          "value" : "EUR-Đồng Euro"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "26731"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "29545"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "JPY-Yên Nhật",
+          "value" : "JPY-Yên Nhật"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "153"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "169"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "GBP-Bảng Anh",
+          "value" : "GBP-Bảng Anh"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "31978"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "35344"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "CHF-Phơ răng Thuỵ Sĩ",
+          "value" : "CHF-Phơ răng Thuỵ Sĩ"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "29182"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "32254"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "AUD-Đô la Úc",
+          "value" : "AUD-Đô la Úc"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "16215"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "17922"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "CAD-Đô la Canada",
+          "value" : "CAD-Đô la Canada"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "17098"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "18898"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    } ],
+    "datePublished" : "2026-11-25T01:15:00Z",
+    "id" : 11008045,
+    "title" : "Tỷ giá tham khảo giữa đồng Việt Nam và các loại ngoại tệ tại Cục Quản lý ngoại hối ngày 25/11/2026"
+  }, {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2026-11-22T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày áp dụng",
+      "name" : "ngayApDung",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : ""
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Ghi chú",
+      "name" : "ghiChu",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "USD-Đô la Mỹ",
+          "value" : "USD-Đô la Mỹ"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "25500"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "26901"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "EUR-Đồng Euro",
+          "value" : "EUR-Đồng Euro"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "26776"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "29594"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "JPY-Yên Nhật",
+          "value" : "JPY-Yên Nhật"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "153"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "170"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "GBP-Bảng Anh",
+          "value" : "GBP-Bảng Anh"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "31967"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "35332"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "CHF-Phơ răng Thuỵ Sĩ",
+          "value" : "CHF-Phơ răng Thuỵ Sĩ"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "29022"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "32077"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "AUD-Đô la Úc",
+          "value" : "AUD-Đô la Úc"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "16218"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "17925"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Tỷ giá tham khảo Field Set",
+      "name" : "tyGiaThamKhaos",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "CAD-Đô la Canada",
+          "value" : "CAD-Đô la Canada"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Ngoại tệ",
+        "name" : "ngoaiTe",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "17021"
+        },
+        "dataType" : "double",
+        "label" : "Mua",
+        "name" : "mua",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "18813"
+        },
+        "dataType" : "double",
+        "label" : "Bán",
+        "name" : "ban",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    } ],
+    "datePublished" : "2026-11-23T01:18:00Z",
+    "id" : 10997912,
+    "title" : "Tỷ giá tham khảo giữa đồng Việt Nam và các loại ngoại tệ tại Cục Quản lý ngoại hối ngày 23/11/2026"
+  } ],
+  "lastPage" : 386,
+  "page" : 1,
+  "pageSize" : 3,
+  "totalCount" : 1158
+}

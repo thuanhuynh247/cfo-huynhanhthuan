@@ -1,11 +1,27 @@
 {
-  "name": "cfo-huynhanhthuan",
-  "private": true,
+  "name": "cfo-terminal",
+  "productName": "CFO Terminal",
+  "version": "2.0.0",
+  "description": "CFO Terminal cho Windows: tự cào số liệu NHNN (tỷ giá, biên độ, lãi suất liên ngân hàng, OMO, CPI) và giá USD ngân hàng, phân tích cho CFO bằng dòng lệnh, hỏi AI bằng Claude Code, Codex, Gemini, Ollama hoặc khoá API; có API cục bộ cho Excel, Power BI.",
+  "main": "electron/main.mjs",
+  "author": "Huynh Anh Thuan",
+  "license": "MIT",
   "type": "module",
-  "description": "CFO Terminal – phân tích tiền tệ NHNN bằng giao diện dòng lệnh có AI (cfo.huynhanhthuan.com)",
   "engines": { "node": ">=20" },
   "scripts": {
+    "start": "npm run vendor && electron .",
+    "server": "node server/index.mjs",
+    "vendor": "node scripts/vendor-duckdb.mjs",
     "ontology": "python ontology/build_ontology.py",
-    "test": "python scripts/smoke_test.py"
+    "test": "node --test test/*.test.mjs",
+    "smoke": "python scripts/smoke_test.py",
+    "build:win": "npm run vendor && electron-builder --config electron-builder.yml --win --x64 --dir && node scripts/set-exe-icon.mjs \"release/win-unpacked/CFO Terminal.exe\" build/icon.ico 2.0.0 && electron-builder --config electron-builder.yml --win --x64 --prepackaged release/win-unpacked"
+  },
+  "devDependencies": {
+    "@duckdb/duckdb-wasm": "1.33.1-dev57.0",
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8",
+    "esbuild": "^0.24.0",
+    "resedit": "^2.0.3"
   }
 }

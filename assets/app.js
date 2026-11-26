@@ -1,5 +1,5 @@
 // CFO Terminal – giao diện dòng lệnh có AI cho phân tích tiền tệ.
-// Số liệu: thư mục /data của chính trang này, do crawler/*.py cập nhật qua GitHub Actions.
+// Số liệu: app tự cào NHNN và giá ngân hàng ngay trên máy (server/crawler.mjs), lưu ở %APPDATA%\\CFO Terminal\\data.
 // Tính toán: lib/core.js (dùng chung với API /api/v1/*).
 // Ngữ nghĩa: assets/ontology.json, sinh từ ontology/build_ontology.py theo chuẩn NVIDIA Auto Ontology.
 import { N, S, DMY, MY, T, todayVN, days, fold, median, FILES, buildTables, computeMetrics as coreMetrics, signals as coreSignals } from "/lib/core.js";
@@ -7,11 +7,17 @@ import { N, S, DMY, MY, T, todayVN, days, fold, median, FILES, buildTables, comp
 const QS = new URLSearchParams(location.search);
 const CFG = {
   dataBase: QS.get("data") || "/data/",
-  duckdb: "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1-dev57.0/+esm",
-  api: "/api/v1/ai",
-  model: "claude-sonnet-5-5",
+  duckdb: "/vendor/duckdb/",
+  duckdbCdn: "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1-dev57.0/+esm",
   maxSteps: 8,
 };
+const DESKTOP = window.DESKTOP || null; // cầu nối Electron (lưu tệp qua hộp thoại Windows)
+async function api(path, body) {
+  const r = await fetch(path, body === undefined ? { cache: "no-store" } : { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
+  return j;
+}
 
 // ================================================================ tiện ích
 const $ = (s, r = document) => r.querySelector(s);
@@ -33,7 +39,8 @@ const store = {
   set(k, v) { try { v == null ? localStorage.removeItem("cfo:" + k) : localStorage.setItem("cfo:" + k, JSON.stringify(v)); } catch {} },
 };
 async function getJSON(url) { const r = await fetch(url, { cache: "no-cache" }); if (!r.ok) throw new Error(`${r.status} ${url}`); return r.json(); }
-function download(name, text, type = "text/plain") { const a = el("a", { href: URL.createObjectURL(new Blob([text], { type: type + ";charset=utf-8" })), download: name }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+async function download(name, text, type = "text/plain") {
+  if (DESKTOP?.saveText) { const r = await DESKTOP.saveText(name, text); return r?.path || null; } const a = el("a", { href: URL.createObjectURL(new Blob([text], { type: type + ";charset=utf-8" })), download: name }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
 async function copy(text, btn) { try { await navigator.clipboard.writeText(text); if (btn) { const o = btn.textContent; btn.textContent = "Đã chép"; setTimeout(() => (btn.textContent = o), 1400); } } catch { /* trình duyệt chặn */ } }
 
 // ================================================================ số liệu
@@ -153,13 +160,22 @@ let duck = null;
 async function getDuck(onStatus) {
   if (duck) return duck;
   need();
-  onStatus?.("Đang nạp bộ máy SQL (DuckDB, khoảng 5–10 MB, chỉ lần đầu)…");
-  const m = await import(CFG.duckdb);
-  const bundle = await m.selectBundle(m.getJsDelivrBundles());
-  const wurl = URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker}");`], { type: "text/javascript" }));
-  const db = new m.AsyncDuckDB(new m.VoidLogger(), new Worker(wurl));
-  await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-  URL.revokeObjectURL(wurl);
+  onStatus?.("Đang khởi động bộ máy SQL (DuckDB)…");
+  let db;
+  try {
+    const m = await import(CFG.duckdb + "duckdb.mjs");
+    const base = new URL(CFG.duckdb, location.href).href;
+    db = new m.AsyncDuckDB(new m.VoidLogger(), new Worker(base + "duckdb-browser-eh.worker.js"));
+    await db.instantiate(base + "duckdb-eh.wasm");
+  } catch (e) { // bản web không có DuckDB đóng gói sẵn: nạp từ CDN
+    console.warn("DuckDB cục bộ lỗi, dùng CDN:", e);
+    const m = await import(CFG.duckdbCdn);
+    const bundle = await m.selectBundle(m.getJsDelivrBundles());
+    const wurl = URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker}");`], { type: "text/javascript" }));
+    db = new m.AsyncDuckDB(new m.VoidLogger(), new Worker(wurl));
+    await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+    URL.revokeObjectURL(wurl);
+  }
   const conn = await db.connect();
   // Tạo bảng đúng kiểu dữ liệu trong ontology rồi chèn bằng INSERT (không cần tải phần mở rộng JSON từ mạng)
   const lit = (v, type) => {
@@ -233,17 +249,27 @@ function coverage(q) {
 }
 
 // ================================================================ AI: vòng retrieve → run_sql → submit (theo Auto Ontology)
+// Chạy được với mọi nền tảng AI trên máy (Claude Code, Codex, Gemini, Ollama, khoá API…): mỗi lượt AI trả MỘT hành động JSON,
+// app thực hiện hành động rồi gửi kết quả ở lượt sau. Kết nối AI do máy chủ cục bộ giữ (server/drivers.mjs), không qua máy chủ nào khác.
 const ai = {
-  mode() { return store.get("ai.mode", "server"); },
-  model() { return store.get("ai.model", CFG.model); },
-  configured() { return this.mode() === "key" ? !!store.get("ai.key", null) : this.mode() === "server"; },
-  label() { const m = this.mode(); return m === "off" ? "AI tắt" : m === "key" ? "AI: khoá riêng" : "AI: máy chủ"; },
+  cfg: null, engines: [], loaded: false,
+  async refresh(full = true) {
+    try { this.cfg = await api("/api/config"); if (full) this.engines = await api("/api/engines"); this.loaded = true; }
+    catch { this.cfg = this.cfg || { engine: "" }; }
+    paintStatus();
+  },
+  engine() { return this.engines.find((e) => e.id === this.cfg?.engine) || null; },
+  ready() { const e = this.engine(); return Boolean(e && e.installed && e.loggedIn); },
+  configured() { return Boolean(this.cfg?.engine); },
+  label() { const e = this.engine(); if (!this.cfg?.engine) return "AI: chưa chọn"; if (!this.loaded) return "AI: đang kiểm tra"; return (e ? e.name.replace(/ \(.*\)$/, "") : this.cfg.engine) + (this.ready() ? "" : " (chưa sẵn sàng)"); },
 };
-const TOOLS = [
-  { name: "retrieve", description: "Tìm trong ontology các khái niệm, bảng, cột, chỉ số (kèm SQL) và quan hệ khớp với cụm từ nghiệp vụ. Gọi trước khi viết SQL; gọi lại khi thiếu.", input_schema: { type: "object", properties: { query: { type: "string", description: "Cụm từ nghiệp vụ, ví dụ 'lãi suất qua đêm', 'áp lực tỷ giá'" } }, required: ["query"] } },
-  { name: "run_sql", description: "Chạy một câu SELECT trên DuckDB với các bảng đã retrieve. Trả tối đa 50 dòng.", input_schema: { type: "object", properties: { sql: { type: "string" } }, required: ["sql"] } },
-  { name: "submit", description: "Nộp câu trả lời cuối: answer (tiếng Việt, mọi con số lấy từ kết quả SQL, nêu ngày số liệu), sql (câu lệnh cuối cùng tạo ra số), steps (các bước ngắn).", input_schema: { type: "object", properties: { answer: { type: "string" }, sql: { type: "string" }, steps: { type: "array", items: { type: "string" } }, answerable: { type: "boolean", description: "false nếu dữ liệu không trả lời được" } }, required: ["answer", "steps"] } },
-];
+const ACTIONS = `Mỗi lượt chỉ trả về MỘT khối JSON là MỘT HÀNH ĐỘNG, không viết gì khác:
+{"action":"retrieve","query":"<cụm từ nghiệp vụ, ví dụ: lãi suất qua đêm, áp lực tỷ giá>"}
+  → tìm khái niệm, bảng, cột, chỉ số (kèm SQL mẫu), quan hệ trong ontology. Gọi trước khi viết SQL; gọi lại khi thiếu.
+{"action":"run_sql","sql":"<một câu SELECT DuckDB trên các bảng đã retrieve>"}
+  → trả tối đa 50 dòng.
+{"action":"submit","answer":"<trả lời tiếng Việt, mọi con số lấy từ kết quả SQL, nêu ngày số liệu>","sql":"<câu SQL cuối tạo ra số>","steps":["<bước ngắn>"],"answerable":true}
+  → nộp câu trả lời cuối; answerable=false nếu dữ liệu không trả lời được.`;
 function systemPrompt() {
   const cat = D.ont.datasets.map((d) => `- ${d.name}: ${d.label} (${d.grain}); cột: ${d.fields.map((f) => `${f.name} ${f.type}`).join(", ")}`).join("\n");
   const fresh = [`tỷ giá trung tâm mới nhất ${DMY(M.last?.ngay)}`, `liên ngân hàng mới nhất ${DMY(M.ibL)}`, `OMO mới nhất ${DMY(M.omoL)}`, `CPI mới nhất ${M.cpiL ? MY(M.cpiL.thang) : "—"}`].join("; ");
@@ -257,80 +283,80 @@ Quy trình bắt buộc (giống NVIDIA Auto Ontology):
 Quy tắc: mọi con số trong answer phải đến từ kết quả SQL, ghi ngày của số liệu. Ưu tiên chỉ số đã định nghĩa trong ontology. Cảnh báo rủi ro nhân dòng khi ghép bảng theo ngày. Nếu dữ liệu không có khái niệm cần thiết (ví dụ giá vàng, tín dụng, doanh thu công ty), submit với answerable=false, nói rõ thiếu gì và gợi ý câu hỏi trả lời được. Không khuyến nghị mua bán ngoại tệ cụ thể; có thể nêu hàm ý và câu hỏi kiểm soát cho doanh nghiệp.
 
 Danh mục bảng:
-${cat}`;
+${cat}
+
+HÀNH ĐỘNG
+${ACTIONS}`;
 }
-async function callClaude(body) {
-  const mode = ai.mode();
-  let r;
-  if (mode === "key") {
-    r = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "content-type": "application/json", "x-api-key": store.get("ai.key", ""), "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" }, body: JSON.stringify({ model: ai.model(), ...body }) });
-  } else if (mode === "server") {
-    r = await fetch(CFG.api, { method: "POST", headers: { "content-type": "application/json", "x-cfo-code": store.get("ai.code", "") }, body: JSON.stringify({ model: ai.model(), ...body }) });
-  } else throw new Error("AI đang tắt. Gõ: ai may-chu hoặc ai key <khoá>.");
-  const txt = await r.text();
-  let j; try { j = JSON.parse(txt); } catch { j = null; }
-  if (!r.ok) {
-    const msg = j?.error?.message || j?.error || txt.slice(0, 200);
-    if (r.status === 401) throw new Error("Máy chủ từ chối: sai hoặc thiếu mã truy cập. Gõ: ai ma <mã>.");
-    if (r.status === 404 && mode === "server") throw new Error("Chưa có máy chủ AI (/api/v1/ai). Dùng: ai key <khoá Anthropic> để gọi thẳng từ trình duyệt.");
-    if (r.status === 503) throw new Error("Máy chủ chưa cài ANTHROPIC_API_KEY.");
-    throw new Error(`AI lỗi ${r.status}: ${msg}`);
+// Lấy khối JSON đầu tiên trong câu trả lời của CLI (có thể kèm lời dẫn, ```json, dấu phẩy thừa)
+function parseAction(raw) {
+  let s = String(raw || "");
+  const fence = /```(?:json)?\s*([\s\S]*?)```/i.exec(s);
+  if (fence && fence[1].includes("{")) s = fence[1];
+  const start = s.indexOf("{");
+  if (start < 0) return null;
+  let depth = 0, inStr = false, esc = false, end = -1;
+  for (let i = start; i < s.length; i++) {
+    const c = s[i];
+    if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
+    if (c === '"') inStr = true; else if (c === "{") depth++; else if (c === "}" && --depth === 0) { end = i; break; }
   }
-  return j;
+  const body = end > 0 ? s.slice(start, end + 1) : s.slice(start);
+  for (const f of [(x) => x, (x) => x.replace(/,\s*([}\]])/g, "$1").replace(/[“”]/g, '"')]) { try { return JSON.parse(f(body)); } catch { /* thử cách khác */ } }
+  return null;
 }
 async function agent(question, ui) {
-  const shown = new Set(), steps = [], messages = [{ role: "user", content: question }];
-  let final = null, lastSQL = null;
+  const shown = new Set(), steps = [], transcript = [];
+  let final = null, lastSQL = null, bad = 0;
   for (let i = 0; i < CFG.maxSteps && !final; i++) {
-    ui.status(`Bước ${i + 1}: đang suy luận…`);
-    const resp = await callClaude({ system: systemPrompt(), messages, tools: TOOLS, max_tokens: 1800 });
-    messages.push({ role: "assistant", content: resp.content });
-    const uses = resp.content.filter((c) => c.type === "tool_use");
-    if (!uses.length) { final = { answer: resp.content.filter((c) => c.type === "text").map((c) => c.text).join("\n"), steps, sql: lastSQL, answerable: true }; break; }
-    const results = [];
-    for (const u of uses) {
-      let out;
-      try {
-        if (u.name === "retrieve") {
-          const terms = searchTerms(u.input.query, 5);
-          terms.forEach((t) => shown.add(t.dataset));
-          const det = terms.map(termDetail);
-          det.forEach((d) => d.relationships.forEach((r) => { shown.add(r.from); shown.add(r.to); }));
-          out = { terms: det.map((d) => ({ khai_niem: d.term.ten, mo_ta: d.term.mo_ta, bang: d.dataset?.name, cot: d.term.cot, loc: d.term.loc, chi_so: d.metric ? { ten: d.metric.name, sql: d.metric.sql, don_vi: d.metric.unit } : null, cot_cua_bang: d.dataset?.fields.map((f) => `${f.name} ${f.type}: ${f.mo_ta}`), quan_he: d.relationships.map((r) => `${r.from}.${r.from_columns} → ${r.to}.${r.to_columns} (${r.cardinality}; ${r.note})`) })), khong_co_trong_du_lieu: gapsIn(u.input.query) };
-          steps.push(`retrieve "${u.input.query}" → ${terms.map((t) => t.ten).join(", ") || "không có khái niệm khớp"}`);
-          ui.step(steps.at(-1));
-        } else if (u.name === "run_sql") {
-          const r = await runSQL(u.input.sql, { limit: 50, allowed: shown, onStatus: ui.status });
-          lastSQL = u.input.sql;
-          out = { columns: r.columns, rows: r.rows, row_count: r.row_count, truncated: r.truncated };
-          steps.push(`run_sql → ${r.row_count} dòng`);
-          ui.step(steps.at(-1));
-        } else if (u.name === "submit") {
-          final = { ...u.input };
-          out = { ok: true };
-        } else out = { error: "Công cụ không tồn tại" };
-      } catch (e) {
-        out = { error: String(e.message || e) };
-        steps.push(`${u.name} lỗi: ${out.error}`);
-        ui.step(steps.at(-1));
-      }
-      results.push({ type: "tool_result", tool_use_id: u.id, content: JSON.stringify(out).slice(0, 12000) });
+    ui.status(`Bước ${i + 1}: ${ai.engine()?.name || "AI"} đang suy luận…`);
+    const prompt = `${systemPrompt()}\n\nCÂU HỎI CỦA CFO: ${question}\n\n${transcript.join("\n\n")}\n\nTrả về HÀNH ĐỘNG tiếp theo (một khối JSON).`;
+    const { text, engine } = await api("/api/ai/run", { prompt });
+    const act = parseAction(text);
+    if (!act?.action) {
+      if (++bad >= 2) { final = { answer: String(text || "").trim().slice(0, 4000) || "AI không trả lời.", steps, sql: lastSQL, answerable: true }; break; }
+      transcript.push(`HÀNH ĐỘNG CỦA BẠN: (không đọc được)\nKẾT QUẢ CÔNG CỤ: {"error":"Hãy trả về đúng MỘT khối JSON theo mẫu HÀNH ĐỘNG."}`);
+      continue;
     }
-    messages.push({ role: "user", content: results });
+    let out;
+    try {
+      if (act.action === "retrieve") {
+        const terms = searchTerms(String(act.query || question), 5);
+        terms.forEach((t) => shown.add(t.dataset));
+        const det = terms.map(termDetail);
+        det.forEach((d) => d.relationships.forEach((r) => { shown.add(r.from); shown.add(r.to); }));
+        out = { terms: det.map((d) => ({ khai_niem: d.term.ten, mo_ta: d.term.mo_ta, bang: d.dataset?.name, cot: d.term.cot, loc: d.term.loc, chi_so: d.metric ? { ten: d.metric.name, sql: d.metric.sql, don_vi: d.metric.unit } : null, cot_cua_bang: d.dataset?.fields.map((f) => `${f.name} ${f.type}: ${f.mo_ta}`), quan_he: d.relationships.map((r) => `${r.from}.${r.from_columns} → ${r.to}.${r.to_columns} (${r.cardinality}; ${r.note})`) })), khong_co_trong_du_lieu: gapsIn(String(act.query || "")) };
+        steps.push(`retrieve "${act.query}" → ${terms.map((t) => t.ten).join(", ") || "không có khái niệm khớp"}`);
+      } else if (act.action === "run_sql") {
+        const r = await runSQL(String(act.sql || ""), { limit: 50, allowed: shown, onStatus: ui.status });
+        lastSQL = act.sql;
+        out = { columns: r.columns, rows: r.rows, row_count: r.row_count, truncated: r.truncated };
+        steps.push(`run_sql → ${r.row_count} dòng`);
+      } else if (act.action === "submit") {
+        final = { answer: String(act.answer || ""), sql: act.sql || lastSQL, steps: Array.isArray(act.steps) ? act.steps : [], answerable: act.answerable !== false, engine };
+        break;
+      } else out = { error: `Hành động ${act.action} không có. Chỉ dùng retrieve, run_sql, submit.` };
+    } catch (e) {
+      out = { error: String(e.message || e) };
+      steps.push(`${act.action} lỗi: ${out.error}`);
+    }
+    ui.step(steps.at(-1));
+    transcript.push(`HÀNH ĐỘNG CỦA BẠN: ${JSON.stringify(act)}\nKẾT QUẢ CÔNG CỤ: ${JSON.stringify(out).slice(0, 12000)}`);
   }
   if (!final) final = { answer: "Chưa đi đến câu trả lời sau số bước cho phép. Hãy hỏi cụ thể hơn.", steps, sql: lastSQL, answerable: false };
-  final.steps = [...steps, ...(final.steps || []).map((s) => "↳ " + s)];
+  final.steps = [...steps, ...(final.steps || []).map((x) => "↳ " + x)];
   final.used = [...shown];
   return final;
 }
-function answerCard({ answer, sql, steps, rows, used, answerable }) {
+function answerCard({ answer, sql, steps, rows, used, answerable, engine }) {
   const lineage = (used || []).map((n) => D.ont.datasets.find((d) => d.name === n)).filter(Boolean);
   return el("div", { class: "ans" },
     el("div", { class: "row" }, el("div", { class: "lab" }, "Trả lời"), el("div", {}, el("p", { class: answerable === false ? "warn" : "" }, answer))),
     sql ? el("div", { class: "row" }, el("div", { class: "lab" }, "SQL"), el("pre", {}, sql)) : null,
     rows ? el("div", { class: "row" }, el("div", { class: "lab" }, "Dữ liệu"), el("div", {}, rows)) : null,
     steps?.length ? el("div", { class: "row" }, el("div", { class: "lab" }, "Các bước"), el("ol", {}, steps.map((s) => el("li", {}, s)))) : null,
-    lineage.length ? el("div", { class: "row" }, el("div", { class: "lab" }, "Nguồn"), el("div", {}, lineage.map((d) => el("div", {}, el("span", { class: "tag" }, d.name), el("a", { href: d.lineage.url, target: "_blank", rel: "noopener" }, d.lineage.nguon))))) : null);
+    lineage.length ? el("div", { class: "row" }, el("div", { class: "lab" }, "Nguồn"), el("div", {}, lineage.map((d) => el("div", {}, el("span", { class: "tag" }, d.name), el("a", { href: d.lineage.url, target: "_blank", rel: "noopener" }, d.lineage.nguon))))) : null,
+    engine ? el("div", { class: "row" }, el("div", { class: "lab" }, "AI"), el("div", { class: "muted" }, ai.engines.find((e) => e.id === engine)?.name || engine)) : null);
 }
 
 // ================================================================ tác động doanh nghiệp
@@ -540,8 +566,8 @@ def("baocao", ["bc", "bao-cao", "memo"], "Doanh nghiệp", "", "Bản tin tiền
 def("hoi", ["ask", "ai?"], "AI & dữ liệu", "<câu hỏi>", "Hỏi bằng tiếng Việt; AI tra ontology, viết SQL, chạy và trả lời kèm SQL, các bước, nguồn", async (a, out) => {
   need(); const q = a.join(" ").trim(); if (!q) throw new Error("Cú pháp: hoi <câu hỏi>, ví dụ: hoi lãi suất qua đêm tuần này so với OMO?");
   const cov = coverage(q);
-  if (!ai.configured() || ai.mode() === "off") {
-    out.append(el("p", { class: "muted" }, "AI chưa bật nên dùng bộ định tuyến từ khoá. Bật AI: ", link("ai"), "."));
+  if (!ai.configured()) {
+    out.append(el("p", { class: "muted" }, "Chưa kết nối AI nên dùng bộ định tuyến từ khoá. Kết nối AI (Claude, ChatGPT, Gemini, Ollama…): ", link("ai"), "."));
     if (cov.gaps.length && !cov.terms.length) { out.append(answerCard({ answer: `Dữ liệu hiện có không chứa: ${cov.gaps.join(", ")}. Có thể hỏi về tỷ giá, biên độ, lãi suất liên ngân hàng, OMO, CPI, giá USD các ngân hàng.`, answerable: false, steps: ["kiemtra → độ phủ " + N(cov.coverage * 100, 0) + "%"] })); return; }
     const cmd = route(q); out.append(P("→ chạy ", link(cmd))); await COMMANDS.find((c) => c.name === cmd).run([], out); return;
   }
@@ -600,11 +626,11 @@ def("bang", ["tables", "schema", "describe"], "AI & dữ liệu", "[tên bảng]
 def("xuat", ["export", "csv"], "AI & dữ liệu", "<tên bảng>", "Tải một bảng về CSV (mở bằng Excel)", (a, out) => {
   need(); const ds = D.ont.datasets.find((d) => d.name === a[0]); if (!ds) throw new Error("Cú pháp: xuat <tên bảng>. Gõ bang để xem tên.");
   const rows = D.t[ds.name], cols = ds.fields.map((f) => f.name);
-  const csv = "﻿" + [cols.join(","), ...rows.map((r) => cols.map((c) => { const v = r[c]; return v == null ? "" : /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v; }).join(","))].join("\n");
+  const csv = "\ufeff" + [cols.join(","), ...rows.map((r) => cols.map((c) => { const v = r[c]; return v == null ? "" : /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v; }).join(","))].join("\n");
   download(`${ds.name}-${todayVN()}.csv`, csv, "text/csv"); out.append(P(`Đã tải ${N(rows.length)} dòng của bảng ${ds.name}. Muốn Excel tự cập nhật: gõ `, link("api " + ds.name), "."));
 });
 
-def("api", ["endpoint", "powerbi", "excel"], "AI & dữ liệu", "[tên bảng]", "Địa chỉ API của dự án: nối Excel, Power BI, Google Sheets để số tự cập nhật", (a, out) => {
+def("api", ["endpoint", "powerbi", "excel"], "AI & dữ liệu", "[tên bảng]", "API trên máy này: nối Excel, Power BI để số tự cập nhật", (a, out) => {
   const o = location.origin, ten = D.ont?.datasets.some((d) => d.name === a[0]) ? a[0] : "ty_gia_trung_tam";
   const row = (k, path, v) => ({ k, url: o + path, v });
   const rows = [
@@ -623,31 +649,92 @@ def("api", ["endpoint", "powerbi", "excel"], "AI & dữ liệu", "[tên bảng]"
     el("li", {}, "Dán địa chỉ CSV ở trên, ví dụ ", el("code", {}, `${o}/api/v1/bang/${ten}?dinh_dang=csv`), "."),
     el("li", {}, "Load. Sau đó Data → Refresh All (hoặc Query Properties → Refresh every 60 minutes)."),
   ));
-  out.append(el("p", { class: "muted" }, "Power BI: Get data → Web, cùng địa chỉ. Google Sheets: ", el("code", {}, `=IMPORTDATA("${o}/api/v1/bang/${ten}?dinh_dang=csv")`), ". API chỉ đọc, không cần khoá; riêng /api/v1/ai cần mã truy cập."));
+  out.append(el("p", { class: "muted" }, "Power BI Desktop: Get data → Web, cùng địa chỉ. API chạy ngay trên máy này (", el("code", {}, o), "), chỉ đọc, không cần khoá; Excel/Power BI chỉ làm mới được khi CFO Terminal đang mở."));
 });
 
 def("nguon", ["suckhoe", "health", "nguon-du-lieu"], "Hệ thống", "", "Tình trạng từng nguồn, độ trễ, lần cào gần nhất", (a, out) => {
   need(); const h = D.raw.health || { sources: {} };
   const per = (x) => !x ? "—" : x.length === 7 ? MY(x + "-01") : DMY(x);
-  out.append(P(el("span", { class: "muted" }, "Bộ cào chạy lần cuối "), h.lan_chay ? new Date(h.lan_chay).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" }) : "—", el("span", { class: "muted" }, ` trên ${h.may_chay === "github-actions" ? "GitHub Actions" : h.may_chay || "—"}; trang này nạp số liệu lúc ${D.loadedAt?.toLocaleTimeString("vi-VN")}.`)));
+  out.append(P(el("span", { class: "muted" }, "Bộ cào chạy lần cuối "), h.lan_chay ? new Date(h.lan_chay).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" }) : "—", el("span", { class: "muted" }, ` trên ${h.may_chay === "may-tinh-cfo" ? "máy này" : h.may_chay === "github-actions" ? "GitHub Actions (số đóng gói sẵn)" : h.may_chay || "—"}; trang này nạp số liệu lúc ${D.loadedAt?.toLocaleTimeString("vi-VN")}.`)));
   out.append(table([{ l: "Nguồn", f: (s) => el("a", { href: s.link, target: "_blank", rel: "noopener" }, s.ten) }, { l: "Có từ", f: (s) => per(s.ky_dau_tien) }, { l: "Mới nhất", f: (s) => per(s.ky_moi_nhat) }, { l: "Bản ghi", n: 1, f: (s) => N(s.so_ban_ghi) }, { l: "Trạng thái", f: (s) => el("span", { class: s.trang_thai === "ok" ? "ok" : s.trang_thai === "cho" ? "warn" : "bad" }, s.trang_thai === "ok" ? "● Ổn" : s.trang_thai === "cho" ? "● Chờ lượt sau" : "● Lỗi") }, { l: "Lịch sử", f: (s) => s.lich_su_day_du === false ? "đang tải dần" : s.lich_su_day_du ? "đủ" : "—" }], Object.values(h.sources || {})));
-  out.append(el("p", { class: "muted" }, "Bộ cào của chính dự án chạy mỗi giờ (thứ 2–6, 8:15–17:15) và một lượt đêm 23:15, ghi vào /data rồi Vercel đăng bản mới. NHNN chặn khi gọi dồn dập nên mỗi lượt chỉ gọi tối đa 4 lần. Gõ api để lấy số qua API."));
+  out.append(el("p", { class: "muted" }, "App tự cào ngay trên máy này khi mở và mỗi giờ sau đó; NHNN chặn khi gọi dồn dập nên mỗi lượt chỉ gọi tối đa 4 lần, giãn cách 20 giây. Nếu NHNN chặn máy này, app lấy bù từ kho công khai vcb-exchange-rate. Gõ capnhat để cập nhật ngay, api để nối Excel."));
 });
 
-def("ai", ["cai-dat-ai"], "Hệ thống", "[may-chu|ma <mã>|key <khoá>|model <tên>|tat]", "Bật/tắt AI và chọn cách kết nối", (a, out) => {
-  const sub = fold(a[0] || "");
-  if (sub === "tat" || sub === "off") store.set("ai.mode", "off");
-  else if (sub === "may-chu" || sub === "maychu" || sub === "server") store.set("ai.mode", "server");
-  else if (sub === "ma" || sub === "code") { store.set("ai.code", a.slice(1).join(" ")); store.set("ai.mode", "server"); }
-  else if (sub === "key") { const k = a[1] || ""; if (!/^sk-ant-/.test(k)) throw new Error("Khoá Anthropic bắt đầu bằng sk-ant-…"); store.set("ai.key", k); store.set("ai.mode", "key"); }
-  else if (sub === "model") { store.set("ai.model", a[1] || CFG.model); }
-  else if (sub === "xoa") { store.set("ai.key", null); store.set("ai.code", null); store.set("ai.mode", "server"); }
-  paintStatus();
-  out.append(table([{ l: "Mục", k: "k" }, { l: "Giá trị", k: "v", wrap: 1 }], [
-    { k: "Chế độ", v: ai.label() }, { k: "Mô hình", v: ai.model() },
-    { k: "Mã truy cập máy chủ", v: store.get("ai.code", null) ? "đã nhập" : "chưa nhập" },
-    { k: "Khoá riêng", v: store.get("ai.key", null) ? "đã lưu trên máy này" : "chưa có" }]));
-  out.append(el("p", { class: "muted" }, "Máy chủ: trang gọi /api/v1/ai trên Vercel, khoá nằm trong biến môi trường ANTHROPIC_API_KEY, người dùng nhập mã truy cập (", el("code", {}, "ai ma <mã>"), "). Khoá riêng: ", el("code", {}, "ai key sk-ant-…"), " lưu trong trình duyệt máy này và gọi thẳng Anthropic – chỉ dùng trên máy cá nhân. Xoá: ", el("code", {}, "ai xoa"), "."));
+def("capnhat", ["cn", "cap-nhat", "update", "cao"], "Hệ thống", "[ngay]", "Cào số liệu mới ngay bây giờ (NHNN và giá USD ngân hàng) trên máy này", async (a, out) => {
+  const st = el("p", { class: "spin muted" }, "Đang cập nhật: NHNN giãn cách 20 giây mỗi lần gọi nên có thể mất 1–2 phút…"), logBox = el("pre", { class: "code" });
+  out.append(st, logBox);
+  let j = await api("/api/capnhat", { force: fold(a[0] || "") === "ngay" });
+  while (j.running) { logBox.textContent = (j.log || []).slice(-12).join("\n"); await new Promise((r) => setTimeout(r, 1500)); j = await api("/api/capnhat"); }
+  st.remove(); logBox.textContent = (j.log || []).slice(-12).join("\n") || "Không có gì mới.";
+  if (j.lastError) out.append(el("p", { class: "err" }, "Lỗi: " + j.lastError));
+  await loadAll(); paintStatus();
+  const r = j.result?.nhnn?.results || {};
+  out.append(P(`Xong lúc ${new Date().toLocaleTimeString("vi-VN")}: `, Object.entries(r).map(([k, v]) => `${k} ${v === "ok" ? "ổn" : v === "cho" ? "chờ lượt sau" : "lỗi"}`).join(", ") || "đã dùng số đang có", `. Giá ngân hàng: ${j.result?.banks?.direct?.join(", ") || "không cào thẳng được"}.`));
+  out.append(next("tongquan", "nguon"));
+});
+
+def("ai", ["ketnoi", "ket-noi", "cai-dat-ai", "ai-setup"], "Hệ thống", "", "Kết nối AI trên máy này: Claude Code, ChatGPT/Codex, Gemini, Ollama hoặc khoá API", async (a, out) => {
+  const st = el("p", { class: "spin muted" }, "Đang dò các nền tảng AI trên máy…"); out.append(st);
+  await ai.refresh(true); st.remove();
+  const cfg = ai.cfg, cats = { cli: "Đăng nhập bằng tài khoản (không cần khoá)", api: "Khoá API (trả theo lượt dùng)", local: "Chạy offline trên máy" };
+  const pill = (e) => el("span", { class: "pill " + (e.installed && e.loggedIn ? "ok" : e.installed ? "warn" : "bad") }, e.installed && e.loggedIn ? "sẵn sàng" : e.installed ? "chưa đăng nhập" : "chưa cài");
+  const jobBox = el("div", { class: "job", hidden: true });
+  const follow = async (job) => {
+    if (job.mode === "windows-console" || job.launched) { jobBox.hidden = false; jobBox.replaceChildren(P("Đã mở cửa sổ dòng lệnh. Làm theo hướng dẫn trong cửa sổ đó (đăng nhập trên trình duyệt), xong quay lại bấm ", el("b", {}, "Dò lại"), ".")); return; }
+    jobBox.hidden = false;
+    const pre = el("pre", { class: "code" }), links = el("div", { class: "acts" }), inp = el("form", { class: "acts", hidden: true }, el("input", { name: "t", placeholder: "Dán mã xác nhận vào đây", class: "txt" }), el("button", { class: "btn sm", type: "submit" }, "Gửi"));
+    inp.onsubmit = async (e) => { e.preventDefault(); await api(`/api/jobs/${job.id}/input`, { text: inp.t.value }); inp.t.value = ""; };
+    jobBox.replaceChildren(pre, links, inp);
+    for (;;) {
+      const j = await api(`/api/jobs/${job.id}`);
+      pre.textContent = (j.output || "").slice(-3000) || "Đang chạy…";
+      links.replaceChildren(...(j.urls || []).slice(-3).map((u) => el("a", { href: u, target: "_blank", rel: "noopener", class: "btn sm" }, "Mở trang đăng nhập")));
+      inp.hidden = !j.needsInput;
+      if (j.status !== "running") { pre.textContent += `\n— ${j.status === "done" ? "Xong" : "Kết thúc: " + j.status}`; break; }
+      await new Promise((r) => setTimeout(r, 1200));
+    }
+    await ai.refresh(true); paint();
+  };
+  const box = el("div");
+  const paint = () => {
+    box.replaceChildren();
+    const cur = ai.engine();
+    box.append(el("p", { class: "lead" }, cur && ai.ready() ? ["Đang dùng ", el("b", {}, cur.name), cfg.model ? ` (mô hình ${cfg.model})` : "", ". Gõ ", link("hoi lãi suất qua đêm tuần này so với OMO?"), " để thử."] : "Chọn một nền tảng AI đã có trên máy. App gọi AI ngay trên máy anh, không qua máy chủ nào, không cần khoá của người khác."));
+    for (const [c, title] of Object.entries(cats)) {
+      const ORDER = ["claude", "codex", "gemini", "anthropic-api", "gemini-api", "openrouter", "ollama"];
+      const rank = (e) => { const i = ORDER.indexOf(e.id); return i < 0 ? 99 : i; };
+      const list = ai.engines.filter((e) => e.category === c).sort((x, y) => rank(x) - rank(y));
+      if (!list.length) continue;
+      box.append(H(title));
+      box.append(el("div", { class: "engs" }, list.map((e) => el("label", { class: "eng" + (cfg.engine === e.id ? " sel" : "") },
+        el("input", { type: "radio", name: "eng", value: e.id, checked: cfg.engine === e.id ? "" : null }),
+        el("div", { class: "nm" }, el("b", {}, e.name, " ", pill(e)), el("span", { class: "muted" }, e.vendor, " · ", e.detail),
+          e.envKeyName ? el("input", { type: "password", class: "txt", "data-key": e.envKeyName, placeholder: (e.envKeyLabel || e.envKeyName) + (cfg.apiKeys?.[e.envKeyName] ? " — đã lưu " + cfg.apiKeys[e.envKeyName] : ""), autocomplete: "off" }) : null),
+        el("div", { class: "acts" },
+          e.installCmd && !e.installed ? el("button", { class: "btn sm", type: "button", onclick: async () => follow(await api("/api/engines/install", { id: e.id })) }, "Cài") : null,
+          e.loginCmd && e.installed && !e.loggedIn ? el("button", { class: "btn sm", type: "button", onclick: async () => follow(await api("/api/engines/login", { id: e.id, mode: "terminal" })) }, "Đăng nhập") : null,
+          el("button", { class: "btn sm", type: "button", onclick: async (ev) => { const b = ev.currentTarget; b.textContent = "Đang thử…"; try { await save(); const r = await api("/api/engines/ping", { id: e.id, model: e.id === cfg.engine ? cfg.model : "" }); b.textContent = `Trả lời sau ${(r.latencyMs / 1000).toFixed(1)} giây`; } catch (err) { b.textContent = "Lỗi: " + String(err.message).slice(0, 60); } } }, "Thử"))))));
+    }
+    const models = (ai.engines.find((e) => e.id === cfg.engine)?.models || []);
+    box.append(H("Mô hình và dự phòng"));
+    box.append(el("div", { class: "acts" },
+      el("input", { id: "ai-model", class: "txt", list: "ai-models", value: cfg.model || "", placeholder: "Mô hình (để trống = mặc định của nền tảng)" }),
+      el("datalist", { id: "ai-models" }, models.map((m) => el("option", { value: m }))),
+      el("select", { id: "ai-fb", class: "txt", "aria-label": "Nền tảng dự phòng" }, el("option", { value: "" }, "Không dùng dự phòng"), ai.engines.filter((e) => e.installed && e.loggedIn && e.id !== cfg.engine).map((e) => el("option", { value: e.id, selected: (cfg.fallback || [])[0] === e.id ? "" : null }, "Dự phòng: " + e.name)))));
+    box.append(el("div", { class: "acts" }, el("button", { class: "btn pri", type: "button", onclick: async (ev) => { await save(); ev.currentTarget.textContent = "Đã lưu"; paint(); } }, "Lưu"), el("button", { class: "btn", type: "button", onclick: async () => { await ai.refresh(true); paint(); } }, "Dò lại")));
+    box.append(jobBox);
+    box.append(el("p", { class: "muted" }, "Khoá API chỉ lưu trong ", el("code", {}, cfg.dataDir || "%APPDATA%\\CFO Terminal"), " trên máy này. Claude Code cần gói Claude Pro/Max; Codex cần ChatGPT Plus/Pro; Gemini CLI đăng nhập bằng tài khoản Google; Ollama chạy offline."));
+  };
+  const save = async () => {
+    const eng = box.querySelector("input[name=eng]:checked")?.value || "";
+    const keys = {}; box.querySelectorAll("input[data-key]").forEach((i) => { if (i.value.trim()) keys[i.dataset.key] = i.value.trim(); });
+    const fb = box.querySelector("#ai-fb")?.value;
+    ai.cfg = await api("/api/config", { engine: eng, model: box.querySelector("#ai-model")?.value || "", fallback: fb ? [fb] : [], apiKeys: keys });
+    await ai.refresh(Object.keys(keys).length > 0 || eng !== cfg.engine);
+    Object.assign(cfg, ai.cfg);
+  };
+  box.addEventListener("change", async (e) => { if (e.target.name === "eng") { await save(); paint(); } });
+  paint(); out.append(box);
 });
 
 def("giaodien", ["theme", "giao-dien", "sang", "toi"], "Hệ thống", "", "Đổi giao diện sáng/tối", (a, out) => { toggleTheme(); out.append(P(`Giao diện ${document.documentElement.dataset.theme === "light" ? "sáng" : "tối"}.`)); });
@@ -718,7 +805,7 @@ $("#form").addEventListener("submit", (e) => { e.preventDefault(); const v = inp
 document.addEventListener("keydown", (e) => { if (e.key === "/" && document.activeElement !== input) { e.preventDefault(); input.focus(); } });
 
 // chip lệnh nhanh
-const CHIPS = [["Tổng quan", "tongquan"], ["Áp lực tỷ giá", "biendo"], ["Giá USD ngân hàng", "nganhang"], ["Lãi suất", "laisuat"], ["Thanh khoản", "thanhkhoan"], ["OMO", "omo"], ["Lạm phát", "cpi"], ["Tác động DN", "tacdong"], ["Cảnh báo", "canhbao"], ["Báo cáo CFO", "baocao"], ["Hỏi AI…", "hoi "], ["API cho Excel", "api"], ["Trợ giúp", "trogiup"]];
+const CHIPS = [["Tổng quan", "tongquan"], ["Áp lực tỷ giá", "biendo"], ["Giá USD ngân hàng", "nganhang"], ["Lãi suất", "laisuat"], ["Thanh khoản", "thanhkhoan"], ["OMO", "omo"], ["Lạm phát", "cpi"], ["Tác động DN", "tacdong"], ["Cảnh báo", "canhbao"], ["Báo cáo CFO", "baocao"], ["Hỏi AI…", "hoi "], ["Kết nối AI", "ai"], ["Cập nhật số", "capnhat"], ["Nối Excel", "api"], ["Trợ giúp", "trogiup"]];
 $("#chips").replaceChildren(...CHIPS.map(([l, c]) => el("button", { class: "chip", type: "button", onclick: () => { if (c.endsWith(" ")) { input.value = c; input.focus(); } else exec(c); } }, l)));
 
 // thanh trạng thái
@@ -733,15 +820,16 @@ function paintStatus() {
     const src = Object.values(D.raw.health?.sources || {}), ok = src.filter((s) => s.trang_thai === "ok").length;
     d.replaceChildren(el("span", { class: "dot " + (ok === src.length ? "ok" : "warn") }), el("span", { class: "lbl-short" }, `${ok}/${src.length}`), el("span", { class: "lbl-long" }, `${ok}/${src.length} nguồn · TT ${DMY(M.last?.ngay).slice(0, 5)}`));
   }
-  a.replaceChildren(el("span", { class: "dot " + (ai.mode() === "off" ? "" : ai.mode() === "key" && !store.get("ai.key", null) ? "warn" : "ok") }), el("span", { class: "lbl-short" }, "AI"), el("span", { class: "lbl-long" }, ai.label()));
+  a.replaceChildren(el("span", { class: "dot " + (!ai.configured() ? "" : !ai.loaded ? "" : ai.ready() ? "ok" : "warn") }), el("span", { class: "lbl-short" }, "AI"), el("span", { class: "lbl-long" }, ai.label()));
 }
 
 // khởi động
 let resolveReady; const dataReady = new Promise((r) => (resolveReady = r));
 (async function boot() {
   paintStatus();
+  ai.refresh(false).then(() => ai.refresh(true));
   const { out } = entry("chào");
-  out.append(el("p", { class: "lead" }, "CFO Terminal tự cào số liệu Ngân hàng Nhà nước và giá USD ngân hàng (mỗi giờ trong giờ làm việc), tính sẵn chỉ số cho CFO và trả lời bằng tiếng Việt. Mọi câu trả lời của AI kèm SQL, các bước và nguồn để anh tự kiểm."));
+  out.append(el("p", { class: "lead" }, "CFO Terminal tự cào số liệu Ngân hàng Nhà nước và giá USD ngân hàng ngay trên máy này (khi mở app và mỗi giờ), tính sẵn chỉ số cho CFO. Hỏi AI bằng tiếng Việt qua tài khoản Claude, ChatGPT, Gemini hoặc Ollama của chính anh; mọi câu trả lời kèm SQL, các bước và nguồn để tự kiểm."));
   out.append(el("p", { class: "muted" }, "Bấm chip bên dưới hoặc gõ ", link("trogiup"), ". Phím ", el("kbd", {}, "/"), " để nhảy vào ô lệnh."));
   try { await loadAll(); resolveReady(); }
   catch (e) { D.err = e; out.append(el("p", { class: "err" }, "Không nạp được số liệu: " + e.message)); }

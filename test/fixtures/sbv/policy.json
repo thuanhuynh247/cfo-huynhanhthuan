@@ -1,0 +1,104 @@
+{
+  "actions" : {
+    "get" : {
+      "method" : "GET",
+      "href" : "https://sbv.gov.vn/o/headless-delivery/v1.0/content-structures/3450482/structured-contents"
+    }
+  },
+  "facets" : [ ],
+  "items" : [ {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2023-03-18T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày",
+      "name" : "ngayApDung",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Bảng lãi suất Field Set",
+      "name" : "banglaiSuats",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "Lãi suất tái chiết khấu",
+          "value" : "Lãi suất tái chiết khấu"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Loại lãi suất",
+        "name" : "loaiLaiSuat",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "3,000%"
+        },
+        "dataType" : "string",
+        "inputControl" : "text",
+        "label" : "Giá trị",
+        "name" : "giaTri",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "1123/QĐ-NHNN ngày 16/06/2023"
+        },
+        "dataType" : "string",
+        "inputControl" : "text",
+        "label" : "Văn bản quyết định",
+        "name" : "vanBanQuyetDinh",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    }, {
+      "contentFieldValue" : { },
+      "dataType" : "",
+      "label" : "Bảng lãi suất Field Set",
+      "name" : "banglaiSuats",
+      "nestedContentFields" : [ {
+        "contentFieldValue" : {
+          "data" : "Lãi suất tái cấp vốn",
+          "value" : "Lãi suất tái cấp vốn"
+        },
+        "dataType" : "string",
+        "inputControl" : "select",
+        "label" : "Loại lãi suất",
+        "name" : "loaiLaiSuat",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "4,500%"
+        },
+        "dataType" : "string",
+        "inputControl" : "text",
+        "label" : "Giá trị",
+        "name" : "giaTri",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      }, {
+        "contentFieldValue" : {
+          "data" : "1123/QĐ-NHNN ngày 16/06/2023"
+        },
+        "dataType" : "string",
+        "inputControl" : "text",
+        "label" : "Văn bản quyết định",
+        "name" : "vanBanQuyetDinh",
+        "nestedContentFields" : [ ],
+        "repeatable" : false
+      } ],
+      "repeatable" : true
+    } ],
+    "datePublished" : "2025-10-26T18:37:00Z",
+    "id" : 3451452,
+    "title" : "19-06-2023"
+  } ],
+  "lastPage" : 1,
+  "page" : 1,
+  "pageSize" : 5,
+  "totalCount" : 1
+}

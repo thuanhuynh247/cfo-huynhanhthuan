@@ -1,0 +1,43 @@
+appId: com.huynhanhthuan.cfoterminal
+productName: CFO Terminal
+copyright: Copyright © 2026 Huynh Anh Thuan
+directories:
+  output: release
+  buildResources: build
+files:
+  - electron/**/*
+  - server/**/*
+  - lib/**/*
+  - assets/**/*
+  - data/nhnn/*.json
+  - data/ngan-hang/*.json
+  - crawler/cpi_seed.json
+  - index.html
+  - build/icon.png
+  - package.json
+  - LICENSE
+  - NOTICE
+  - "!assets/vendor/duckdb/*.map"
+asar: true
+win:
+  icon: build/icon.ico
+  signAndEditExecutable: false
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+nsis:
+  artifactName: CFO-Terminal-Setup-${arch}.${ext}
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: CFO Terminal
+  uninstallDisplayName: CFO Terminal
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+portable:
+  artifactName: CFO-Terminal-Portable-${arch}.${ext}
+publish: null

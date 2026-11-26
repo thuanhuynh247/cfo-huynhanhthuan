@@ -25,12 +25,25 @@ Tất cả nằm trong `ontology/build_ontology.py`. Không sửa tay `assets/on
 ```bash
 python ontology/build_ontology.py      # sinh lại ontology
 python scripts/validate_ontology.py    # mọi chỉ số chạy được trên số liệu thật (data/)
-node scripts/test_api.mjs              # API /api/v1/* chạy đúng trên số liệu thật
-python scripts/smoke_test.py           # trình duyệt thật, desktop + điện thoại, AI giả lập
+npm test                               # bộ cào Node = bản Python trên mẫu NHNN thật; máy chủ; API; AI giả
+python scripts/smoke_test.py           # trình duyệt thật, desktop + điện thoại, AI giả (cần npm run vendor)
 ```
+Workflow `build-win.yml` build .exe trên Windows và mở thử bản build trước khi phát hành.
+
+## Kiến trúc nhanh
+
+| Phần | Tệp |
+|---|---|
+| Vỏ Windows | `electron/main.mjs`, `electron/preload.cjs`, `electron-builder.yml` |
+| Máy chủ cục bộ | `server/index.mjs` (127.0.0.1:47240) |
+| Kết nối AI | `server/drivers.mjs`, `server/env-path.mjs` (lấy từ MedSlide VI Studio; sửa thì giữ tương thích) |
+| Bộ cào trên máy | `server/crawler.mjs` (bản Node của `crawler/sbv.py`, `crawler/ngan_hang.py`) |
+| Lõi tính toán | `lib/core.js`, `lib/api-v1.js` |
+| Giao diện | `index.html`, `assets/app.js`, `assets/style.css` |
+| Trang tải | `web/` |
 
 ## Dữ liệu
 
-`data/` do bot ghi (workflow `cap-nhat-du-lieu.yml`). Không sửa tay. Muốn cào thử trên máy:
-`pip install -r requirements.txt && python crawler/sbv.py && python crawler/ngan_hang.py`.
-NHNN chặn khi gọi dồn dập: không giảm `RADAR_PACE_S` dưới 20 giây, không tăng `RADAR_MAX_CALLS` quá 4.
+`data/` do bot ghi (workflow `cap-nhat-du-lieu.yml`, mỗi đêm) và được đóng gói vào bản cài. Không sửa tay.
+NHNN chặn khi gọi dồn dập: không giảm giãn cách dưới 20 giây, không tăng quá 4 lần gọi mỗi lượt.
+Đổi bộ đọc trong `crawler/sbv.py` thì đổi tương ứng trong `server/crawler.mjs` và cập nhật `test/fixtures/sbv/expected.json`.

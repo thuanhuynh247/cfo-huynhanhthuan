@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CFO Terminal · Số liệu NHNN và AI cho Giám đốc tài chính, chạy trên máy bạn</title>
+<meta name="description" content="App Windows miễn phí cho CFO: tự cập nhật tỷ giá trung tâm, áp lực biên độ, lãi suất liên ngân hàng, OMO, CPI và giá USD 16 ngân hàng; hỏi AI bằng tài khoản Claude, ChatGPT, Gemini hoặc Ollama của chính bạn; nối thẳng Excel, Power BI.">
+<link rel="canonical" href="https://cfo.huynhanhthuan.com/">
+<meta property="og:title" content="CFO Terminal – Huỳnh Anh Thuận">
+<meta property="og:description" content="Số liệu tiền tệ NHNN tự cập nhật, phân tích cho CFO, hỏi AI bằng tiếng Việt. Cài một lần, chạy trên máy bạn.">
+<meta property="og:image" content="https://cfo.huynhanhthuan.com/assets/img/app-tongquan.webp">
+<link rel="icon" href="/assets/img/icon.png">
+<link rel="stylesheet" href="/site.css">
+<script src="/config.js" defer></script>
+<script src="/main.js" defer></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/"><img src="/assets/img/icon.png" alt="" width="32" height="32">CFO Terminal</a>
+  <nav><a href="#tinh-nang">Tính năng</a><a href="#ai">Kết nối AI</a><a href="#excel">Excel, Power BI</a><a href="#hoi-dap">Hỏi đáp</a></nav>
+</div></header>
+
+<main>
+<div class="wrap hero">
+  <div>
+    <span class="eyebrow">› Windows 10/11 · miễn phí · phiên bản <span data-ver>2.0.0</span></span>
+    <h1>Bảng điều khiển tiền tệ cho CFO, chạy ngay trên máy bạn</h1>
+    <p class="lead">Tự cập nhật tỷ giá trung tâm, áp lực biên độ ±5%, lãi suất liên ngân hàng, OMO, CPI của Ngân hàng Nhà nước và giá USD 16 ngân hàng. Tính sẵn tác động lên doanh nghiệp. Hỏi AI bằng tiếng Việt qua tài khoản của chính bạn; mọi câu trả lời kèm SQL và nguồn.</p>
+    <div class="dl">
+      <a class="btn pri" data-dl="setup" href="#">Tải bộ cài đặt<small>CFO-Terminal-Setup-x64.exe</small></a>
+      <a class="btn" data-dl="portable" href="#">Bản chạy ngay<small>không cần cài</small></a>
+    </div>
+    <p class="note">Windows có thể cảnh báo SmartScreen vì app chưa ký số: bấm <b>More info</b> → <b>Run anyway</b>.</p>
+  </div>
+  <img class="shot" src="/assets/img/app-tongquan.webp" alt="Màn tổng quan của CFO Terminal: tỷ giá trung tâm, áp lực tỷ giá, lãi suất qua đêm, OMO, CPI và tín hiệu cần chú ý" width="1280" height="860">
+</div>
+
+<section id="tinh-nang"><div class="wrap">
+  <h2>Gõ một lệnh, có ngay câu trả lời cho Ban điều hành</h2>
+  <p class="sub">Giao diện dòng lệnh: gõ <code>tongquan</code>, <code>biendo</code>, <code>laisuat</code> hoặc hỏi thẳng bằng tiếng Việt. Bấm chip nếu không muốn gõ.</p>
+  <div class="grid3">
+    <div class="card"><h3>Tự lấy số liệu NHNN</h3><p>App tự gọi sbv.gov.vn khi mở và mỗi giờ, giãn cách để không bị chặn; có sẵn lịch sử từ 2009. Bị chặn thì lấy bù từ kho dữ liệu công khai.</p></div>
+    <div class="card"><h3>Áp lực tỷ giá thật</h3><p>Giá bán USD trung vị của các ngân hàng đã dùng bao nhiêu phần trăm biên độ trên, còn bao xa đến trần, cao nhất và thấp nhất trong năm.</p></div>
+    <div class="card"><h3>Tác động lên công ty</h3><p>Nhập phải thu, phải trả, vay USD, vay VND một lần; <code>tacdong</code> và <code>kichban usd=3 ls=2</code> tính ngay lãi lỗ tỷ giá và chi phí lãi vay.</p></div>
+    <div class="card"><h3>Cảnh báo và câu hỏi kiểm soát</h3><p><code>canhbao</code> nêu tín hiệu rủi ro; <code>cauhoi</code> gợi ý câu hỏi nên đặt cho Ban điều hành; <code>baocao</code> xuất bản tin CFO để dán vào email.</p></div>
+    <div class="card"><h3>Mọi con số có nguồn</h3><p>Định nghĩa chỉ số theo chuẩn NVIDIA Auto Ontology: nghĩa, công thức SQL, nguồn gốc, trạng thái xác nhận. Gõ <code>dinhnghia áp lực tỷ giá</code>.</p></div>
+    <div class="card"><h3>SQL ngay trong app</h3><p>DuckDB chạy offline: <code>sql SELECT …</code> trên 7 bảng số liệu, xuất CSV mở bằng Excel.</p></div>
+  </div>
+</div></section>
+
+<section id="ai"><div class="wrap two">
+  <div>
+    <h2>AI của bạn, không phải của ai khác</h2>
+    <p class="sub">App gọi AI ngay trên máy bạn bằng tài khoản bạn đang có. Không có máy chủ trung gian, không thu phí, số liệu và câu hỏi không đi qua bên thứ ba nào ngoài nhà cung cấp AI bạn chọn.</p>
+    <ol class="steps">
+      <li>Gõ <code>ai</code> (hoặc bấm chip <b>Kết nối AI</b>).</li>
+      <li>Chọn nền tảng: bấm <b>Cài</b> nếu chưa có, rồi <b>Đăng nhập</b> bằng tài khoản trên trình duyệt; hoặc dán khoá API.</li>
+      <li>Bấm <b>Thử</b>, thấy trả lời là xong. Hỏi: <code>hoi lãi suất qua đêm tuần này so với OMO?</code></li>
+    </ol>
+    <ul class="ai"><li>Claude Code (Claude Pro/Max)</li><li>Codex (ChatGPT Plus/Pro)</li><li>Gemini CLI (tài khoản Google)</li><li>Claude API</li><li>Gemini API</li><li>OpenRouter</li><li>Ollama (offline)</li><li>OpenCode, Copilot, Qwen</li></ul>
+  </div>
+  <img class="shot" src="/assets/img/app-ketnoi-ai.webp" alt="Màn kết nối AI: danh sách nền tảng, trạng thái cài đặt và đăng nhập" width="1280" height="900" loading="lazy">
+</div></section>
+
+<section id="excel"><div class="wrap">
+  <h2>Nối thẳng Excel, Power BI</h2>
+  <p class="sub">Khi app đang mở, máy bạn có một API chỉ đọc tại <code>http://127.0.0.1:47240/api/v1</code>. Gõ <code>api</code> trong app để chép địa chỉ.</p>
+  <div class="grid3">
+    <div class="card"><h3>Excel</h3><p>Data → From Web → dán <code>http://127.0.0.1:47240/api/v1/bang/ty_gia_trung_tam?dinh_dang=csv</code> → Load. Refresh All để cập nhật.</p></div>
+    <div class="card"><h3>Power BI Desktop</h3><p>Get data → Web, cùng địa chỉ. Lọc bằng <code>tu=</code>, <code>den=</code>, <code>ky_han=ON</code>, <code>ngoai_te=USD</code>.</p></div>
+    <div class="card"><h3>7 bảng số liệu</h3><p>Tỷ giá trung tâm, tỷ giá tham khảo, lãi suất liên ngân hàng, lãi suất điều hành, OMO, CPI, giá USD ngân hàng.</p></div>
+  </div>
+</div></section>
+
+<section id="hoi-dap"><div class="wrap">
+  <h2>Hỏi đáp</h2>
+  <details><summary>Số liệu lấy từ đâu, bao lâu cập nhật?</summary><p>Từ sbv.gov.vn (API dữ liệu mà chính các biểu đồ của NHNN dùng, cùng trang OMO và CPI) và từ trang tỷ giá của Vietcombank, ACB, MSB; bảng 16 ngân hàng lấy từ kho công khai vcb-exchange-rate. App cập nhật khi mở và mỗi giờ; gõ <code>capnhat</code> để cập nhật ngay, <code>nguon</code> để xem tình trạng từng nguồn.</p></details>
+  <details><summary>Dữ liệu và khoá của tôi nằm ở đâu?</summary><p>Trong <code>%APPDATA%\CFO Terminal</code> trên máy bạn. Khoá API (nếu dùng) chỉ lưu ở đó và chỉ gửi tới nhà cung cấp AI bạn chọn.</p></details>
+  <details><summary>Có mất phí không?</summary><p>App miễn phí. Nếu dùng AI, chi phí là gói bạn đang có (Claude, ChatGPT, Google) hoặc tiền khoá API theo lượt dùng; Ollama chạy offline thì không tốn gì.</p></details>
+  <details><summary>Đây có phải lời khuyên đầu tư?</summary><p>Không. Đây là công cụ phân tích số liệu công khai để CFO đặt đúng câu hỏi; quyết định là của doanh nghiệp.</p></details>
+</div></section>
+</main>
+
+<footer><div class="wrap">© 2026 Huỳnh Anh Thuận · CFO Terminal · Số liệu: Ngân hàng Nhà nước Việt Nam và các ngân hàng thương mại · Phông Be Vietnam Pro, JetBrains Mono (SIL OFL 1.1)</div></footer>
+</body>
+</html>

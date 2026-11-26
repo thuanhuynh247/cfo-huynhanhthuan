@@ -240,3 +240,21 @@ form.input .p { color: var(--accent); user-select: none; white-space: nowrap; fo
   #run .lbl-long { display: none; }
 }
 @media (min-width: 561px) { .lbl-short { display: none; } }
+
+/* ---------- kết nối AI ---------- */
+.engs { display: grid; gap: 8px; }
+.eng { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--tile); cursor: pointer; }
+.eng:hover { border-color: var(--line-2); }
+.eng.sel { border-color: var(--accent); background: var(--accent-soft); }
+.eng input[type="radio"] { margin-top: 4px; accent-color: var(--accent-fill); width: 16px; height: 16px; }
+.eng .nm { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.eng .nm .muted { font-size: 13px; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; vertical-align: 1px; margin-left: 6px; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); } .pill.bad { background: var(--bad-soft); color: var(--bad); }
+.txt { height: 36px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--panel); color: var(--fg); font: 14px var(--sans); min-width: 0; max-width: 100%; }
+.txt:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+input.txt { width: min(420px, 100%); }
+.job { display: flex; flex-direction: column; gap: 8px; }
+.job pre { max-height: 240px; overflow: auto; }
+@media (max-width: 560px) { .eng { grid-template-columns: auto 1fr; } .eng .acts { grid-column: 1 / -1; } }
+.out div > .h { margin-top: 18px; }

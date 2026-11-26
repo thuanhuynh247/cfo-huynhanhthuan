@@ -1,0 +1,68 @@
+name: Build Windows (.exe)
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "electron/**"
+      - "server/**"
+      - "lib/**"
+      - "assets/**"
+      - "index.html"
+      - "build/**"
+      - "package.json"
+      - "package-lock.json"
+      - "electron-builder.yml"
+      - ".github/workflows/build-win.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: build-win
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm }
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - run: npm run build:win -- --publish never
+      # Mở bản vừa build, chờ thấy màn tổng quan và API trả tỷ giá rồi thoát
+      - name: Kiểm thử khói bản .exe
+        timeout-minutes: 4
+        shell: pwsh
+        run: |
+          $env:CFO_SMOKE = "$env:RUNNER_TEMP\smoke"
+          $env:CFO_DATA_DIR = "$env:RUNNER_TEMP\cfo-data"
+          $p = Start-Process -FilePath "release\win-unpacked\CFO Terminal.exe" -PassThru -Wait -RedirectStandardOutput "$env:RUNNER_TEMP\smoke.log" -RedirectStandardError "$env:RUNNER_TEMP\smoke.err"
+          Get-Content "$env:RUNNER_TEMP\smoke.log", "$env:RUNNER_TEMP\smoke.err" -ErrorAction SilentlyContinue
+          if (-not (Test-Path "$env:RUNNER_TEMP\smoke\ok.txt")) { Write-Error "App không qua kiểm thử khói (mã thoát $($p.ExitCode))"; exit 1 }
+          Get-Content "$env:RUNNER_TEMP\smoke\ok.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cfo-terminal-windows
+          path: |
+            release/*.exe
+            ${{ runner.temp }}/smoke/window.png
+      - name: Read version
+        id: ver
+        shell: bash
+        run: echo "v=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      - if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.v }}
+          target_commitish: ${{ github.sha }}
+          name: CFO Terminal v${{ steps.ver.outputs.v }}
+          make_latest: true
+          body: |
+            CFO Terminal cho Windows 10/11 (64-bit): số liệu NHNN và giá USD ngân hàng tự cập nhật trên máy, phân tích cho CFO, hỏi AI bằng tài khoản Claude/ChatGPT/Gemini/Ollama của chính bạn.
+            - **CFO-Terminal-Setup-x64.exe**: bộ cài đặt (có lối tắt Desktop, gỡ cài đặt được)
+            - **CFO-Terminal-Portable-x64.exe**: bản chạy ngay, không cần cài
+            Windows có thể cảnh báo SmartScreen vì ứng dụng chưa ký số: bấm "More info" → "Run anyway".
+          files: release/*.exe
