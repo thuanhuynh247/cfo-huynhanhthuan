@@ -56,7 +56,7 @@ async def main():
             await pg.wait_for_selector(".kpis", timeout=30000)
             await pg.screenshot(path=f"{SHOTS}/{name}-tongquan.png", full_page=False)
             for cmd in ["biendo", "nganhang", "laisuat", "thanhkhoan", "omo", "cpi", "thamkhao", "tacdong ar=5 ap=3", "kichban usd=3 ls=2",
-                        "canhbao", "cauhoi", "baocao", "thuatngu", "dinhnghia áp lực tỷ giá", "kiemtra giá vàng tuần này", "bang", "nguon", "api", "api cpi", "ai", "giaodien", "tongquan", "giaodien", "trogiup"]:
+                        "canhbao", "cauhoi", "baocao", "thuatngu", "dinhnghia áp lực tỷ giá", "kiemtra giá vàng tuần này", "bang", "nguon", "api", "api cpi", "ai", "caphe", "giaodien", "tongquan", "giaodien", "trogiup"]:
                 await pg.fill("#cmd", cmd); await pg.press("#cmd", "Enter"); await pg.wait_for_timeout(250)
             if True:
                 await pg.fill("#cmd", "sql SELECT ky_han, round(avg(lai_suat),2) ls, count(*) n FROM lai_suat_lien_ngan_hang GROUP BY 1 ORDER BY 1")

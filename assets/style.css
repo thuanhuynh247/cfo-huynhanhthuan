@@ -258,3 +258,6 @@ input.txt { width: min(420px, 100%); }
 .job pre { max-height: 240px; overflow: auto; }
 @media (max-width: 560px) { .eng { grid-template-columns: auto 1fr; } .eng .acts { grid-column: 1 / -1; } }
 .out div > .h { margin-top: 18px; }
+.coffee { display: grid; grid-template-columns: 200px 1fr; gap: 20px; align-items: start; }
+.coffee .qr { width: 200px; height: 200px; border-radius: 14px; border: 1px solid var(--line); background: #fff; padding: 4px; }
+@media (max-width: 560px) { .coffee { grid-template-columns: 1fr; } }

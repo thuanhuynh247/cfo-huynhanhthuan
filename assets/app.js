@@ -737,6 +737,17 @@ def("ai", ["ketnoi", "ket-noi", "cai-dat-ai", "ai-setup"], "Hệ thống", "", "
   paint(); out.append(box);
 });
 
+def("caphe", ["ungho", "ung-ho", "coffee", "cafe"], "Hệ thống", "", "Mời tác giả một ly cà phê (VietQR Vietcombank)", (a, out) => {
+  const img = el("img", { class: "qr", src: "/assets/img/vietqr-any.png", width: 200, height: 200, alt: "Mã VietQR chuyển khoản Vietcombank tới Huỳnh Anh Thuận, số tài khoản 0161001623062" });
+  const amounts = [["any", "Tùy tâm"], ["30k", "30.000đ"], ["50k", "50.000đ"], ["100k", "100.000đ"]];
+  const chips = el("div", { class: "acts", role: "radiogroup", "aria-label": "Chọn số tiền" }, amounts.map(([k, l], i) => el("button", { class: "btn sm" + (i ? "" : " pri"), type: "button", role: "radio", "aria-checked": i ? "false" : "true", onclick: (e) => { img.src = `/assets/img/vietqr-${k}.png`; chips.querySelectorAll("button").forEach((b) => { b.classList.remove("pri"); b.setAttribute("aria-checked", "false"); }); e.currentTarget.classList.add("pri"); e.currentTarget.setAttribute("aria-checked", "true"); } }, l)));
+  const row = (k, v, c) => ({ k, v, c });
+  out.append(el("p", { class: "lead" }, "CFO Terminal miễn phí và sẽ tiếp tục miễn phí. Nếu nó giúp anh chị bớt vài buổi sáng chép số từ trang NHNN sang Excel, một ly cà phê là lời cảm ơn mình rất trân trọng."));
+  out.append(el("div", { class: "coffee" }, img, el("div", {}, chips,
+    table([{ l: "Mục", k: "k" }, { l: "Thông tin", f: (r) => el("b", {}, r.v) }, { l: "", f: (r) => r.c ? el("button", { class: "btn sm", type: "button", onclick: (e) => copy(r.c, e.currentTarget) }, "Chép") : "" }], [
+      row("Ngân hàng", "Vietcombank"), row("Chủ tài khoản", "HUỲNH ANH THUẬN"), row("Số tài khoản", "0161001623062", "0161001623062"), row("Nội dung", "UNG HO CFO TERMINAL", "UNG HO CFO TERMINAL")]),
+    el("p", { class: "muted" }, "Quét bằng app ngân hàng bất kỳ có hỗ trợ VietQR. Khoản ủng hộ dùng để duy trì bộ cào số liệu và làm các phiên bản tiếp theo."))));
+});
 def("giaodien", ["theme", "giao-dien", "sang", "toi"], "Hệ thống", "", "Đổi giao diện sáng/tối", (a, out) => { toggleTheme(); out.append(P(`Giao diện ${document.documentElement.dataset.theme === "light" ? "sáng" : "tối"}.`)); });
 def("lichsu", ["history"], "Hệ thống", "", "Các lệnh đã gõ", (a, out) => { const h = store.get("history", []); out.append(h.length ? el("ol", {}, h.slice(-20).reverse().map((c) => el("li", {}, link(c)))) : P("Chưa có lệnh nào.")); });
 def("lammoi", ["reload", "refresh", "lam-moi"], "Hệ thống", "", "Nạp lại số liệu mới nhất", async (a, out) => { await loadAll(); paintStatus(); out.append(P("Đã nạp lại lúc ", D.loadedAt.toLocaleTimeString("vi-VN"), ".")); });
@@ -830,7 +841,7 @@ let resolveReady; const dataReady = new Promise((r) => (resolveReady = r));
   ai.refresh(false).then(() => ai.refresh(true));
   const { out } = entry("chào");
   out.append(el("p", { class: "lead" }, "CFO Terminal tự cào số liệu Ngân hàng Nhà nước và giá USD ngân hàng ngay trên máy này (khi mở app và mỗi giờ), tính sẵn chỉ số cho CFO. Hỏi AI bằng tiếng Việt qua tài khoản Claude, ChatGPT, Gemini hoặc Ollama của chính anh; mọi câu trả lời kèm SQL, các bước và nguồn để tự kiểm."));
-  out.append(el("p", { class: "muted" }, "Bấm chip bên dưới hoặc gõ ", link("trogiup"), ". Phím ", el("kbd", {}, "/"), " để nhảy vào ô lệnh."));
+  out.append(el("p", { class: "muted" }, "Bấm chip bên dưới hoặc gõ ", link("trogiup"), ". Phím ", el("kbd", {}, "/"), " để nhảy vào ô lệnh. Thấy có ích: ", link("caphe", "mời mình một ly cà phê"), "."));
   try { await loadAll(); resolveReady(); }
   catch (e) { D.err = e; out.append(el("p", { class: "err" }, "Không nạp được số liệu: " + e.message)); }
   paintStatus();

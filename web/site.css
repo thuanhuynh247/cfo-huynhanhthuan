@@ -45,3 +45,22 @@ summary { font-weight: 600; cursor: pointer; }
 details p { color: var(--fg2); margin: 10px 0 0; }
 footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 14px; }
 @media (max-width: 860px) { .hero, .two { grid-template-columns: 1fr; } .grid3 { grid-template-columns: 1fr; } header.top nav { display: none; } .hero { padding-top: 36px; } }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.coffee .coffee-in { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 32px; display: grid; grid-template-columns: 0.9fr 1.5fr; gap: 32px; align-items: center; }
+.qr-block { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: start; }
+.qr { width: 200px; height: 200px; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+.amounts { border: 0; margin: 0 0 14px; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.amounts label { cursor: pointer; }
+.amounts input { position: absolute; opacity: 0; }
+.amounts span { display: inline-block; padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; background: var(--panel); }
+.amounts input:checked + span { background: var(--accent); border-color: var(--accent); color: #fff; }
+.amounts input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bank { margin: 0; display: grid; gap: 8px; }
+.bank div { display: grid; grid-template-columns: 104px 1fr; gap: 8px; align-items: center; }
+.bank dt { color: var(--muted); font-size: 14px; } .bank dd { margin: 0; display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; white-space: nowrap; font-weight: 600; }
+.mono { font-family: var(--mono); font-weight: 400; }
+.copy { font: 13px var(--sans); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg2); cursor: pointer; }
+.copy:hover { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 860px) { .coffee .coffee-in { grid-template-columns: 1fr; padding: 22px; } .qr-block { grid-template-columns: 1fr; justify-items: start; } }
+.coffee .coffee-in > *, .qr-block > * { min-width: 0; }
+@media (max-width: 560px) { .bank div { grid-template-columns: 92px 1fr; } .bank dd { flex-wrap: wrap; white-space: normal; } .mono { overflow-wrap: anywhere; } }
