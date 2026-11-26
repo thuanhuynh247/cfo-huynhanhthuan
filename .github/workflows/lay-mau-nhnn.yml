@@ -1,5 +1,7 @@
 name: Lấy mẫu trang NHNN (kiểm thử bộ cào)
 on: workflow_dispatch
+permissions:
+  contents: write
 jobs:
   mau:
     runs-on: ubuntu-latest
@@ -18,5 +20,7 @@ jobs:
           curl -sS -A "$UA" -o cpi.html "https://sbv.gov.vn/vi/cpi"; sleep 20
           curl -sS -A "$UA" --max-time 400 -o interbank.json "$B/3450260/structured-contents?pageSize=3&$F" || true
           ls -la
-      - uses: actions/upload-artifact@v4
-        with: { name: mau-nhnn, path: mau }
+      - name: Đẩy mẫu lên nhánh mau-nhnn
+        run: |
+          cd mau && git init -q -b mau-nhnn && git add . && git -c user.name=cfo-bot -c user.email=cfo-bot@users.noreply.github.com commit -qm "mẫu NHNN"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" mau-nhnn
