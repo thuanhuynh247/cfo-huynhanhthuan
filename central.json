@@ -1,0 +1,369 @@
+{
+  "actions" : {
+    "get" : {
+      "method" : "GET",
+      "href" : "https://sbv.gov.vn/o/headless-delivery/v1.0/content-structures/137473/structured-contents"
+    }
+  },
+  "facets" : [ ],
+  "items" : [ {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2026-11-25T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Bắt Đầu",
+      "name" : "NgayBatDau",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-25T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Kết Thúc",
+      "name" : "NgayKetThuc",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : ""
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Chú Thích",
+      "name" : "ChuThich",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "25676"
+      },
+      "dataType" : "double",
+      "label" : "1 Đô la Mỹ =",
+      "name" : "TyGiaSo",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "Hai mươi lăm nghìn sáu trăm bảy mươi sáu Đồng Việt Nam"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Bằng Chữ",
+      "name" : "TyGiaChu",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "489/TB-NHNN"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Số Văn Bản",
+      "name" : "SoVanBan",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-25T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Ban Hành",
+      "name" : "NgayBanHanh",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    } ],
+    "datePublished" : "2026-11-26T00:53:00Z",
+    "id" : 11013567,
+    "title" : "26/11/2026"
+  }, {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2026-11-24T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Bắt Đầu",
+      "name" : "NgayBatDau",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-24T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Kết Thúc",
+      "name" : "NgayKetThuc",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : ""
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Chú Thích",
+      "name" : "ChuThich",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "25679"
+      },
+      "dataType" : "double",
+      "label" : "1 Đô la Mỹ =",
+      "name" : "TyGiaSo",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "Hai mươi lăm nghìn sáu trăm bảy mươi chín Đồng Việt Nam"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Bằng Chữ",
+      "name" : "TyGiaChu",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "486/TB-NHNN"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Số Văn Bản",
+      "name" : "SoVanBan",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-24T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Ban Hành",
+      "name" : "NgayBanHanh",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    } ],
+    "datePublished" : "2026-11-25T01:02:00Z",
+    "id" : 11007949,
+    "title" : "25/11/2026"
+  }, {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2026-11-23T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Bắt Đầu",
+      "name" : "NgayBatDau",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-23T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Kết Thúc",
+      "name" : "NgayKetThuc",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : ""
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Chú Thích",
+      "name" : "ChuThich",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "25668"
+      },
+      "dataType" : "double",
+      "label" : "1 Đô la Mỹ =",
+      "name" : "TyGiaSo",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "Hai mươi lăm nghìn sáu trăm sáu mươi tám Đồng Việt Nam"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Bằng Chữ",
+      "name" : "TyGiaChu",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "485/TB-NHNN"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Số Văn Bản",
+      "name" : "SoVanBan",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-22T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Ban Hành",
+      "name" : "NgayBanHanh",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    } ],
+    "datePublished" : "2026-11-23T16:00:00Z",
+    "id" : 11001191,
+    "title" : "24/11/2026"
+  }, {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2026-11-22T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Bắt Đầu",
+      "name" : "NgayBatDau",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-22T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Kết Thúc",
+      "name" : "NgayKetThuc",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : ""
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Chú Thích",
+      "name" : "ChuThich",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "25668"
+      },
+      "dataType" : "double",
+      "label" : "1 Đô la Mỹ =",
+      "name" : "TyGiaSo",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "Hai mươi lăm nghìn sáu trăm sáu mươi tám Đồng Việt Nam"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Bằng Chữ",
+      "name" : "TyGiaChu",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "485/TB-NHNN"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Số Văn Bản",
+      "name" : "SoVanBan",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-22T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Ban Hành",
+      "name" : "NgayBanHanh",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    } ],
+    "datePublished" : "2026-11-23T01:01:00Z",
+    "id" : 10997752,
+    "title" : "23/11/2026"
+  }, {
+    "contentFields" : [ {
+      "contentFieldValue" : {
+        "data" : "2026-11-20T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Bắt Đầu",
+      "name" : "NgayBatDau",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-20T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Kết Thúc",
+      "name" : "NgayKetThuc",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : ""
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Chú Thích",
+      "name" : "ChuThich",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "25659"
+      },
+      "dataType" : "double",
+      "label" : "1 Đô la Mỹ =",
+      "name" : "TyGiaSo",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "Hai mươi lăm nghìn sáu trăm năm mươi chín Đồng Việt Nam"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Bằng Chữ",
+      "name" : "TyGiaChu",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "483/TB-NHNN"
+      },
+      "dataType" : "string",
+      "inputControl" : "text",
+      "label" : "Số Văn Bản",
+      "name" : "SoVanBan",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    }, {
+      "contentFieldValue" : {
+        "data" : "2026-11-19T17:00:00Z"
+      },
+      "dataType" : "date",
+      "label" : "Ngày Ban Hành",
+      "name" : "NgayBanHanh",
+      "nestedContentFields" : [ ],
+      "repeatable" : false
+    } ],
+    "datePublished" : "2026-11-20T16:00:00Z",
+    "id" : 10987714,
+    "title" : "21/10/2026"
+  } ],
+  "lastPage" : 942,
+  "page" : 1,
+  "pageSize" : 5,
+  "totalCount" : 4708
+}
