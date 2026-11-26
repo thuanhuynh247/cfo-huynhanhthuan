@@ -1,0 +1,22 @@
+name: Lấy mẫu trang NHNN (kiểm thử bộ cào)
+on: workflow_dispatch
+jobs:
+  mau:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Tải mẫu, giãn cách 20 giây
+        run: |
+          mkdir mau && cd mau
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+          B="https://sbv.gov.vn/o/headless-delivery/v1.0/content-structures"
+          F="fields=id,title,datePublished,contentFields&sort=datePublished:desc&page=1"
+          curl -sS -A "$UA" -o central.json "$B/137473/structured-contents?pageSize=5&$F"; sleep 20
+          curl -sS -A "$UA" -o reference.json "$B/3450514/structured-contents?pageSize=3&$F"; sleep 20
+          curl -sS -A "$UA" -o policy.json "$B/3450482/structured-contents?pageSize=5&$F"; sleep 20
+          curl -sS -A "$UA" -o omo.html "https://sbv.gov.vn/vi/nghi%E1%BB%87p-v%E1%BB%A5-th%E1%BB%8B-tr%C6%B0%E1%BB%9Dng-m%E1%BB%9F"; sleep 20
+          curl -sS -A "$UA" -o cpi.html "https://sbv.gov.vn/vi/cpi"; sleep 20
+          curl -sS -A "$UA" --max-time 400 -o interbank.json "$B/3450260/structured-contents?pageSize=3&$F" || true
+          ls -la
+      - uses: actions/upload-artifact@v4
+        with: { name: mau-nhnn, path: mau }
