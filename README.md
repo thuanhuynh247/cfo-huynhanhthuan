@@ -43,7 +43,7 @@ Mọi nền tảng chỉ cần nhận văn bản và trả văn bản: vòng `re
   (NHNN chặn khi gọi dồn dập); cào thẳng Vietcombank, ACB, MSB. Nguồn dự phòng: kho công khai
   `thuanhuynh247/vcb-exchange-rate` (NHNN + bảng 16 ngân hàng). Lưu ở `%APPDATA%\CFO Terminal\data`.
 - **Đóng gói sẵn trong bản cài** (`data/`): workflow `cap-nhat-du-lieu.yml` chạy bộ cào Python (`crawler/`) mỗi đêm,
-  lùi dần lịch sử, nên người cài mới có ngay lịch sử từ 2009.
+  lùi dần lịch sử (hiện có liên ngân hàng từ 2018, tỷ giá trung tâm từ 6/2025), nên bản cài mới luôn có lịch sử dài hơn.
 - Bộ đọc Node cho kết quả giống hệt bản Python trên mẫu thật của NHNN (`test/fixtures/sbv`, `npm test`).
 
 ## API cho Excel, Power BI (chạy trên máy, chỉ đọc)
