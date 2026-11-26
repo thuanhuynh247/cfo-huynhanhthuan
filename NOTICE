@@ -1,0 +1,15 @@
+CFO Terminal – cfo.huynhanhthuan.com
+Copyright 2026 Huỳnh Anh Thuận
+
+Thư mục skills/nvidia-ontology-setup, skills/nvidia-ontology-management, skills/nvidia-ontology-query
+(và bản sao trong .claude/skills/) chép nguyên bản từ NVIDIA Auto Ontology
+https://github.com/NVIDIA/auto-ontology – Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES,
+phát hành theo Apache License 2.0 (xem skills/LICENSE-NVIDIA-auto-ontology).
+
+ontology/cfo.ossie.yaml theo định dạng Apache Ossie (https://ossie.apache.org/).
+Số liệu: Ngân hàng Nhà nước Việt Nam (sbv.gov.vn) và giá niêm yết công khai của các ngân hàng thương mại.
+
+Phông Be Vietnam Pro (Copyright The Be Vietnam Pro Project Authors) và JetBrains Mono
+(Copyright The JetBrains Mono Project Authors) phát hành theo SIL Open Font License 1.1,
+xem assets/fonts/OFL-*.txt.
+Một phần dữ liệu giá USD ngân hàng lấy từ kho công khai thuanhuynh247/vcb-exchange-rate.

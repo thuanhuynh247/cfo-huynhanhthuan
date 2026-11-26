@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CFO Terminal · Phân tích tiền tệ cho Giám đốc tài chính</title>
+<meta name="description" content="Tỷ giá, biên độ, lãi suất liên ngân hàng, OMO, CPI của NHNN và giá USD ngân hàng, cập nhật mỗi giờ, kèm tác động lên doanh nghiệp. Gõ lệnh hoặc hỏi AI bằng tiếng Việt; mọi câu trả lời kèm SQL và nguồn. Có API cho Excel, Power BI.">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="CFO Terminal – Huỳnh Anh Thuận">
+<meta property="og:description" content="Hỏi số liệu NHNN bằng tiếng Việt, nhận câu trả lời có SQL, các bước và nguồn.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Ctext x='5' y='22' font-family='monospace' font-weight='700' font-size='17' fill='%23fff'%3E%E2%80%BA_%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="/assets/fonts/be-vietnam-pro-vietnamese-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/be-vietnam-pro-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts.css">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="modulepreload" href="/lib/core.js">
+<script>try{const t=localStorage.getItem("cfo:theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<a class="sr" href="#cmd">Tới ô nhập lệnh</a>
+
+<header class="top">
+  <a class="brand" href="/" aria-label="CFO Terminal – trang đầu">
+    <span class="logo" aria-hidden="true">›_</span>
+    <span class="brand-t"><b>CFO Terminal</b><span class="brand-sub">Phân tích tiền tệ cho Giám đốc tài chính · số liệu NHNN</span></span>
+  </a>
+  <div class="status" aria-label="Trạng thái">
+    <button class="chip-s" id="st-data" type="button" title="Tình trạng nguồn số liệu"><span class="dot"></span><span>Đang nạp…</span></button>
+    <button class="chip-s" id="st-ai" type="button" title="Chế độ AI"><span class="dot"></span><span>AI</span></button>
+    <button class="chip-s" id="st-theme" type="button" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện sáng/tối"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <div id="log" role="log" aria-live="polite" aria-relevant="additions"></div>
+</main>
+
+<div class="dock">
+  <div class="dock-in">
+    <div class="chips" id="chips" aria-label="Lệnh nhanh"></div>
+    <div class="inwrap">
+      <div id="suggest" role="listbox" aria-label="Gợi ý lệnh"></div>
+      <form class="input" id="form" autocomplete="off">
+        <label class="p" for="cmd">›</label>
+        <input id="cmd" name="cmd" type="text" spellcheck="false" autocapitalize="off" enterkeyhint="go"
+               placeholder="Gõ lệnh (tongquan, tygia…) hoặc hỏi bằng tiếng Việt" aria-autocomplete="list" aria-controls="suggest">
+        <button id="run" type="submit" aria-label="Chạy"><span class="lbl-long">Chạy</span><span aria-hidden="true">↵</span></button>
+      </form>
+    </div>
+    <div class="hint"><span><kbd>/</kbd> vào ô lệnh</span><span><kbd>Tab</kbd> gợi ý</span><span><kbd>↑</kbd><kbd>↓</kbd> lệnh trước</span><span><kbd>Ctrl</kbd>+<kbd>L</kbd> xoá màn hình</span><span>gõ <b>trogiup</b> để xem mọi lệnh · <b>api</b> để nối Excel</span></div>
+  </div>
+</div>
+
+<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

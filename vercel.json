@@ -1,0 +1,41 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "functions": {
+    "api/v1/ai.js": { "maxDuration": 60 },
+    "api/v1/index.js": { "maxDuration": 10 },
+    "api/v1/tong-quan.js": { "maxDuration": 10, "includeFiles": "{data/**,assets/ontology.json}" },
+    "api/v1/bang.js": { "maxDuration": 10, "includeFiles": "{data/**,assets/ontology.json}" },
+    "api/v1/suc-khoe.js": { "maxDuration": 10, "includeFiles": "{data/**,assets/ontology.json}" },
+    "api/v1/ontology.js": { "maxDuration": 10, "includeFiles": "{data/**,assets/ontology.json}" }
+  },
+  "rewrites": [
+    { "source": "/api/v1/bang/:ten", "destination": "/api/v1/bang?ten=:ten" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://api.anthropic.com; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" }
+      ]
+    },
+    {
+      "source": "/(assets|lib)/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }]
+    },
+    {
+      "source": "/assets/fonts/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/data/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=120, s-maxage=600, stale-while-revalidate=3600" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}

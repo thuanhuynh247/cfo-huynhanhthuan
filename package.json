@@ -1,0 +1,11 @@
+{
+  "name": "cfo-huynhanhthuan",
+  "private": true,
+  "type": "module",
+  "description": "CFO Terminal – phân tích tiền tệ NHNN bằng giao diện dòng lệnh có AI (cfo.huynhanhthuan.com)",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "ontology": "python ontology/build_ontology.py",
+    "test": "python scripts/smoke_test.py"
+  }
+}

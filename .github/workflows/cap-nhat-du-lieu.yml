@@ -1,0 +1,68 @@
+name: Cập nhật số liệu
+
+# Giờ UTC. Ngày làm việc: mỗi giờ từ 8h15 đến 17h15 giờ Việt Nam; thêm một lượt đêm (23h15) mỗi ngày.
+# Lệch phút 15 so với kho vcb-exchange-rate để hai bên không cùng gọi sbv.gov.vn một lúc.
+on:
+  schedule:
+    - cron: "15 1-10 * * 1-5"
+    - cron: "15 16 * * *"
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Tải lại toàn bộ lịch sử NHNN (lâu, dễ bị chặn)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cap-nhat-du-lieu
+  cancel-in-progress: false
+
+jobs:
+  cao:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Cào NHNN
+        continue-on-error: true
+        env:
+          # Lượt đêm được dùng phần gọi còn dư để lùi thêm lịch sử
+          RADAR_BACKFILL: ${{ github.event.schedule == '15 16 * * *' && '1' || '0' }}
+        run: python crawler/sbv.py ${{ inputs.full && '--full' || '' }}
+
+      - name: Giá USD ngân hàng
+        continue-on-error: true
+        run: python crawler/ngan_hang.py
+
+      - name: Kiểm số liệu trước khi đẩy
+        run: python scripts/kiem_du_lieu.py
+
+      - name: Commit nếu có số mới
+        run: |
+          git config user.name "cfo-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then echo "Không có số mới"; exit 0; fi
+          git commit -m "số liệu: cập nhật $(TZ=Asia/Ho_Chi_Minh date '+%d/%m/%Y %H:%M')"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          exit 1
+
+      # Vercel gói Hobby có thể không tự deploy commit của bot trong kho riêng tư.
+      # Tạo Deploy Hook trong Vercel rồi lưu thành secret VERCEL_DEPLOY_HOOK để chắc chắn trang nhận số mới.
+      - name: Báo Vercel deploy
+        if: ${{ env.HOOK != '' }}
+        run: |
+          if git log -1 --pretty=%an | grep -q cfo-bot && [ "$(git log -1 --pretty=%ct)" -gt "$(( $(date +%s) - 900 ))" ]; then
+            curl -fsS -X POST "$HOOK" > /dev/null && echo "Đã gọi deploy"
+          fi
